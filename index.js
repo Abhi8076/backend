@@ -7,13 +7,13 @@ app.use(cors());
 app.use(compression());
 const port = 3001;
 
-var b;
 app.get('/', async (req, res) => {
     const { url } = req.query;
     if (!url) {
         res.status(400).send("Bad request: 'url' param is missing!");
         return;
     }
+    const b = await puppeteer.launch();
     const page = await b.newPage();
     try {
         await page.goto(url);
@@ -29,7 +29,4 @@ app.get('/', async (req, res) => {
     }
 });
 
-(async () => {
-    b = await puppeteer.launch();
-    app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-})();
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
