@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+console.log(puppeteer.executablePath())
 const cors = require('cors');
 const express = require('express');
 const compression = require('compression');
