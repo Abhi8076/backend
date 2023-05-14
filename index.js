@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-console.log(puppeteer.executablePath())
 const cors = require('cors');
 const express = require('express');
 const compression = require('compression');
@@ -14,6 +13,7 @@ app.get('/', async (req, res) => {
         res.status(400).send("Bad request: 'url' param is missing!");
         return;
     }
+    console.log(puppeteer.executablePath())
     const b = await puppeteer.launch({executablePath: "/tmp/abhi8076-backend/.cache/puppeteer/chrome/linux-113.0.5672.63/chrome-linux/chrome"});
     const page = await b.newPage();
     try {
