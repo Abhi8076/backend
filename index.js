@@ -13,10 +13,9 @@ app.get('/', async (req, res) => {
         res.status(400).send("Bad request: 'url' param is missing!");
         return;
     }
-    console.log(puppeteer.executablePath())
+    try {
     const b = await puppeteer.launch({executablePath: "/tmp/abhi8076-backend/.cache/puppeteer/chrome/linux-113.0.5672.63/chrome-linux/chrome"});
     const page = await b.newPage();
-    try {
         await page.goto(url);
         await page.waitForSelector('video',{ timeout: 20000 });
         const vu = await page.$eval('video', (el) => el.getAttribute('src'));
@@ -24,9 +23,7 @@ app.get('/', async (req, res) => {
         const buf = await resp.arrayBuffer();
         res.send(Buffer.from(buf));
     } catch (error) {
-        res.status(500).send(error);
-    } finally {
-        await page.close();
+        res.status(500).send(error,"<<>>", puppeteer.executablePath());
     }
 });
 
