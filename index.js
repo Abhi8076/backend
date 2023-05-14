@@ -14,7 +14,7 @@ app.get('/', async (req, res) => {
         return;
     }
     try {
-    const b = await puppeteer.launch({executablePath: "/tmp/abhi8076-backend/.cache/puppeteer/chrome/linux-113.0.5672.63/chrome-linux/chrome"});
+    const b = await puppeteer.launch();
     const page = await b.newPage();
         await page.goto(url);
         await page.waitForSelector('video',{ timeout: 20000 });
