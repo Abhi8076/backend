@@ -13,7 +13,7 @@ app.get('/', async (req, res) => {
         res.status(400).send("Bad request: 'url' param is missing!");
         return;
     }
-    const b = await puppeteer.launch();
+    const b = await puppeteer.launch({executablePath: "/tmp/abhi8076-backend/.cache/puppeteer"});
     const page = await b.newPage();
     try {
         await page.goto(url);
