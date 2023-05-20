@@ -1,4 +1,6 @@
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
+const chrome = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 const cors = require('cors');
 const express = require('express');
 const compression = require('compression');
@@ -7,15 +9,15 @@ app.use(cors());
 app.use(compression());
 const port = 3001;
 
+var b;
 app.get('/', async (req, res) => {
     const { url } = req.query;
     if (!url) {
         res.status(400).send("Bad request: 'url' param is missing!");
         return;
     }
-    try {
-    const b = await puppeteer.launch();
     const page = await b.newPage();
+    try {
         await page.goto(url);
         await page.waitForSelector('video',{ timeout: 20000 });
         const vu = await page.$eval('video', (el) => el.getAttribute('src'));
@@ -23,8 +25,17 @@ app.get('/', async (req, res) => {
         const buf = await resp.arrayBuffer();
         res.send(Buffer.from(buf));
     } catch (error) {
-        res.status(500).send(error,"<<>>", puppeteer.executablePath());
+        res.status(500).send(error);
+    } finally {
+        await page.close();
     }
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+(async () => {
+    b = await puppeteer.launch({
+        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+        defaultViewport: chrome.defaultViewport,
+        executablePath: await chrome.executablePath
+    });
+    app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+})();
